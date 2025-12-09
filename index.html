@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <!-- WICHTIG: viewport-fit=cover nutzt auch die Ecken bei neueren iPhones -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Xmas Sudoku">
+    <title>Weihnachts-Sudoku</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    </div>
+
+    <!-- STARTBILDSCHIRM -->
+    <div id="start-screen">
+        <div class="start-content">
+            <img src="startbild1.png" class="start-image" alt="Wir">
+            <h1>Frohe Weihnachten!</h1>
+            <p>Viel Spaß beim Rätseln, mein Schatz! ❤️</p>
+            
+            <div class="settings-box">
+                <label>Schwierigkeit:</label>
+                <select id="difficulty-select">
+                    <option value="easy">Leicht (Zum Entspannen)</option>
+                    <option value="medium" selected>Mittel (Normal)</option>
+                    <option value="hard">Schwer (Knackig!)</option>
+                </select>
+
+                <label>Spiel-Modus:</label>
+                <select id="mode-select">
+                    <option value="instant">Sofortige Hilfe (Farben)</option>
+                    <option value="classic">Klassisch (3 Leben)</option>
+                </select>
+            </div>
+
+            <button onclick="startGame()" class="start-btn-big">🎁 Spiel Starten</button>
+        </div>
+    </div>
+
+    <!-- MENÜ BUTTON -->
+    <button onclick="backToMenu()" class="menu-btn">⚙️ Menü</button>
+
+    <!-- SPIEL BEREICH -->
+    <div class="container" id="game-container">
+        <div class="header">
+            <h1>Ho Ho Ho 🎄</h1>
+            <p id="mode-display">Lade...</p>
+        </div>
+        
+        <div id="game-board"></div>
+        
+        <div class="controls">
+            <div class="numpad">
+                <button onclick="selectNumber(1)">1</button>
+                <button onclick="selectNumber(2)">2</button>
+                <button onclick="selectNumber(3)">3</button>
+                <button onclick="selectNumber(4)">4</button>
+                <button onclick="selectNumber(5)">5</button>
+                <button onclick="selectNumber(6)">6</button>
+                <button onclick="selectNumber(7)">7</button>
+                <button onclick="selectNumber(8)">8</button>
+                <button onclick="selectNumber(9)">9</button>
+            </div>
+            <div class="actions">
+                <button onclick="deleteNumber()" class="del-btn">Radieren</button>
+                <button onclick="checkPuzzle()" id="check-btn" class="check-btn" style="display:none;">Prüfen (3)</button>
+                <button onclick="newGame()" class="new-btn">Neu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GEWONNEN MODAL -->
+    <div id="winner-modal" class="modal">
+        <div class="modal-content">
+            <h2>✨ Perfekt! ✨</h2>
+            <p>Du bist mein Sudoku-Engel!</p>
+            <button onclick="closeWinnerModal()">Nochmal spielen</button>
+        </div>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div id="gameover-modal" class="modal">
+        <div class="modal-content">
+            <h2>Schade! 😢</h2>
+            <p>Keine Versuche mehr übrig.</p>
+            <img src="neustarten1.png" class="gameover-image" alt="Ups">
+            <div class="modal-buttons">
+                <button onclick="restartGame()" class="retry-btn">🔄 Neu Starten</button>
+                <button onclick="gameOverToMenu()" class="back-btn">🏠 Zum Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="info-title" style="font-size: 1.5rem;">Hinweis</h2>
+            <p id="info-text">Text</p>
+            <button onclick="closeInfoModal()" style="margin-top:10px; background:#34495e;">Alles klar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

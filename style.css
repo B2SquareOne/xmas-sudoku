@@ -1,0 +1,191 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    /* WICHTIG: Das ist der Apple System Font Stack. 100% sicher, 100% native */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(180deg, #b3e5fc 0%, #e1f5fe 100%); 
+    color: #2c3e50;
+    text-align: center;
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    overflow-y: auto; 
+    -webkit-tap-highlight-color: transparent;
+    display: flex; flex-direction: column; align-items: center;
+    /* Verhindert Gummiband-Effekt beim Scrollen auf iOS */
+    overscroll-behavior-y: none;
+}
+
+/* MENÜ BUTTON */
+.menu-btn {
+    position: fixed; bottom: 20px; left: 20px; z-index: 50; 
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+    border: 2px solid white; border-radius: 15px; padding: 10px 15px;
+    font-weight: 700; color: #2c3e50;
+    font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.menu-btn:active { transform: scale(0.95); }
+
+/* START SCREEN */
+#start-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, #b3e5fc 0%, #81d4fa 100%);
+    z-index: 100; display: flex; justify-content: center; align-items: center;
+    transition: opacity 0.5s ease-out;
+    padding: 20px; /* Sicherheitsabstand */
+}
+.start-content {
+    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
+    padding: 30px 20px; border-radius: 30px; width: 100%; max-width: 380px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 4px solid #fff;
+    display: flex; flex-direction: column; align-items: center;
+    /* Damit man auf kleinen Screens im Startscreen scrollen kann falls nötig */
+    max-height: 90vh; overflow-y: auto; 
+}
+.start-image {
+    width: 250px; height: auto; border-radius: 15px; border: 6px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 15px;
+    animation: float 4s ease-in-out infinite;
+    /* Verhindert, dass das Bild auf dem iPad riesig wird */
+    max-width: 100%; 
+}
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+.start-content h1 { color: #c0392b; font-size: 1.8rem; margin: 0 0 10px 0; }
+.start-content p { font-size: 1rem; color: #455a64; margin: 0 0 20px 0; }
+
+.settings-box { width: 100%; margin-bottom: 20px; text-align: left; }
+.settings-box label { display: block; font-weight: 800; color: #2980b9; margin-bottom: 5px; font-size: 0.9rem; }
+
+/* HIER WAR DIE ÄNDERUNG: */
+.settings-box select {
+    width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px;
+    border: 2px solid #b3e5fc; font-size: 1rem; background: white; color: #34495e;
+    -webkit-appearance: none; /* Für iOS */
+    appearance: none;         /* Standard (das hat gefehlt) */
+}
+
+.start-btn-big {
+    background: #c0392b; color: white; font-size: 1.2rem; font-weight: 800;
+    padding: 15px 30px; border: none; border-radius: 50px; cursor: pointer; width: 100%;
+    box-shadow: 0 10px 20px rgba(192, 57, 43, 0.3); animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+/* GAME */
+.header { margin-top: 25px; margin-bottom: 15px; z-index: 2; flex-shrink: 0; }
+.header h1 { font-size: 2.2rem; color: #c0392b; margin: 0; text-shadow: 2px 2px 0px #fff; }
+.header p { margin: 5px 0 0 0; color: #455a64; font-weight: 700; }
+
+.container { 
+    width: 100%; display: flex; flex-direction: column; align-items: center; 
+    padding-bottom: 90px; z-index: 2; 
+    max-width: 600px; /* Begrenzung für iPad damit es nicht zu breit wird */
+}
+
+#game-board {
+    display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr);
+    width: 92vw; max-width: 400px; aspect-ratio: 1 / 1;
+    background: #34495e; gap: 1px; border: 4px solid #34495e;
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-bottom: 25px;
+    flex-shrink: 0; /* Verhindert, dass das Board gequetscht wird */
+}
+.tile {
+    width: 100%; height: 100%; background: white;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 1.6rem; font-weight: 700; line-height: 1;
+    cursor: pointer; color: #2c3e50;
+}
+.tile:nth-child(3n) { border-right: 2px solid #34495e; } .tile:nth-child(9n) { border-right: none; }
+.tile:nth-child(n+19):nth-child(-n+27), .tile:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid #34495e; }
+.tile.selected { background-color: #b2ebf2 !important; }
+.tile.start-tile { background-color: #eceff1; color: #34495e; font-weight: 800; }
+.tile.user-tile { color: #2980b9; } 
+.tile.error { background-color: #ffcdd2 !important; color: #c0392b !important; }
+
+.controls { width: 92%; max-width: 400px; }
+.numpad { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; margin-bottom: 20px; }
+.numpad button {
+    width: 100%; aspect-ratio: 3/4; font-size: 1.5rem; font-weight: 800;
+    border: none; border-radius: 8px; background-color: #fff; color: #2980b9;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.1); padding: 0; cursor: pointer;
+}
+.numpad button:active { transform: translateY(2px); box-shadow: 0 2px 0px rgba(0,0,0,0.1); }
+.actions { display: flex; gap: 10px; }
+.actions button {
+    flex: 1; padding: 15px 0; font-size: 1rem; border: none; border-radius: 12px;
+    cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); color: white;
+}
+.del-btn { background-color: #f1c40f; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,0.2); }
+.new-btn { background-color: #c0392b; }
+.check-btn { background-color: #27ae60; }
+.check-btn:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+
+/* MODALS */
+.modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+    justify-content: center; align-items: center; z-index: 999;
+}
+.modal-content {
+    background: white; padding: 30px; border-radius: 20px; text-align: center;
+    width: 85%; max-width: 320px; border: 5px solid #c0392b;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.modal h2 { margin-top: 0; color: #c0392b; font-size: 2rem; }
+.modal button {
+    margin-top: 10px; padding: 15px 30px; background: #2980b9; color: white;
+    border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+    width: 100%; margin-bottom: 10px;
+}
+.gameover-image { width: 200px; height: auto; border-radius: 10px; margin-bottom: 15px; }
+.modal-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.retry-btn { background-color: #27ae60 !important; }
+.back-btn { background-color: #7f8c8d !important; }
+
+/* SNOW */
+.snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 101; }
+.snowflake { color: #fff; font-size: 1.5em; text-shadow: 0 0 1px #000; position: fixed; top: -10%; z-index: 9999; animation: snowflakes-fall 10s linear infinite, snowflakes-shake 3s ease-in-out infinite; }
+@keyframes snowflakes-fall { 0% { top: -10%; } 100% { top: 100%; } }
+@keyframes snowflakes-shake { 0% { transform: translateX(0px); } 50% { transform: translateX(80px); } 100% { transform: translateX(0px); } }
+.snowflake:nth-of-type(1) { left: 1%; animation-delay: 0s, 0s; } .snowflake:nth-of-type(2) { left: 10%; animation-delay: 1s, 1s; } .snowflake:nth-of-type(3) { left: 20%; animation-delay: 6s, .5s; } .snowflake:nth-of-type(4) { left: 30%; animation-delay: 4s, 2s; } .snowflake:nth-of-type(5) { left: 40%; animation-delay: 2s, 2s; } .snowflake:nth-of-type(6) { left: 50%; animation-delay: 8s, 3s; } .snowflake:nth-of-type(7) { left: 60%; animation-delay: 6s, 2s; } .snowflake:nth-of-type(8) { left: 70%; animation-delay: 2.5s, 1s; } .snowflake:nth-of-type(9) { left: 80%; animation-delay: 1s, 0s; } .snowflake:nth-of-type(10) { left: 90%; animation-delay: 3s, 1.5s; }
+
+
+/* =========================================
+   MEDIA QUERIES (ANPASSUNG FÜR VERSCHIEDENE HANDYS)
+   ========================================= */
+
+/* iPhone SE und kleine Handys (Höhe kleiner als 700px) */
+@media (max-height: 700px) {
+    .header { margin-top: 15px; margin-bottom: 5px; }
+    .header h1 { font-size: 1.8rem; }
+    
+    #game-board { 
+        width: 85vh; /* Passt sich an Höhe an statt Breite */
+        max-width: 320px; 
+        margin-bottom: 10px; 
+    }
+    
+    .start-image { width: 160px; margin-bottom: 10px; }
+    .start-content h1 { font-size: 1.5rem; }
+    .start-content p { font-size: 0.9rem; margin-bottom: 10px; }
+    .settings-box { margin-bottom: 10px; }
+    .settings-box select { padding: 8px; margin-bottom: 10px; }
+    
+    .numpad { margin-bottom: 10px; gap: 3px; }
+    .actions button { padding: 10px 0; font-size: 0.9rem; }
+    .container { padding-bottom: 60px; }
+}
+
+/* iPad und Tablets (Breite größer als 700px) */
+@media (min-width: 768px) {
+    .container {
+        justify-content: center; /* Mittig auf dem großen Screen */
+    }
+    #game-board {
+        max-width: 450px; /* Darf auf dem iPad etwas größer sein */
+        margin-bottom: 40px;
+    }
+    .header h1 { font-size: 3rem; }
+    .numpad button { font-size: 2rem; }
+}
