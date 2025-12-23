@@ -6,6 +6,47 @@ let boardState = [];
 let currentDifficulty = "medium";
 let currentMode = "instant";
 let checksRemaining = 3;
+let highlightEnabled = true;
+
+// -------------------------------------------------------------
+// HIER DEINE BILDER EINTRAGEN:
+// Trage die Dateinamen ein, die im Ordner "bilder" liegen.
+// Achte auf Groß-/Kleinschreibung und Endungen (.png, .jpg)!
+// -------------------------------------------------------------
+const meineBilder = [
+    "bild1.png", 
+    "bild2.png",
+    "bild3.png",
+    "bild4.png",
+    "bild5.png",
+    "bild6.png",
+    "bild7.png",
+    "bild8.png",
+    "bild9.png",
+];
+// -------------------------------------------------------------
+
+// Zufälliges Bild holen
+function setRandomImage(elementId) {
+    if (meineBilder.length > 0) {
+        const randomIndex = Math.floor(Math.random() * meineBilder.length);
+        const randomImage = meineBilder[randomIndex];
+        // Pfad zusammensetzen: ordner/bildname
+        const fullPath = "bilder/" + randomImage;
+        
+        const imgElement = document.getElementById(elementId);
+        if (imgElement) {
+            imgElement.src = fullPath;
+        }
+    }
+}
+
+// Initialisierung beim Starten der Seite
+document.addEventListener("DOMContentLoaded", () => {
+    // Setze sofort ein zufälliges Startbild
+    setRandomImage("start-img");
+});
+
 
 // Übersetzungen
 const diffNames = {
@@ -29,8 +70,11 @@ const baseBoard = [
 function startGame() {
     const diffSelect = document.getElementById("difficulty-select");
     const modeSelect = document.getElementById("mode-select");
+    const highlightCheckbox = document.getElementById("highlight-toggle");
+    
     currentDifficulty = diffSelect.value;
     currentMode = modeSelect.value;
+    highlightEnabled = highlightCheckbox.checked;
 
     const checkBtn = document.getElementById("check-btn");
     const modeDisplay = document.getElementById("mode-display");
@@ -52,12 +96,16 @@ function startGame() {
 }
 
 function backToMenu() {
+    // Wenn man ins Menü zurückgeht, neues Zufallsbild laden!
+    setRandomImage("start-img");
+    
     const screen = document.getElementById('start-screen');
     screen.style.display = 'flex';
     setTimeout(() => { screen.style.opacity = '1'; }, 10);
 }
 
 function newGame() {
+    selectedTile = null;
     checksRemaining = 3;
     const checkBtn = document.getElementById("check-btn");
     checkBtn.innerText = "Prüfen (" + checksRemaining + ")";
@@ -111,9 +159,9 @@ function renderBoard(puzzle) {
             if (puzzle[r][c] !== 0) {
                 tile.innerText = puzzle[r][c];
                 tile.classList.add("start-tile");
-            } else {
-                tile.addEventListener("click", selectTile);
-            }
+            } 
+            tile.addEventListener("click", selectTile);
+            
             boardDiv.appendChild(tile);
         }
     }
@@ -121,12 +169,38 @@ function renderBoard(puzzle) {
 
 function selectTile() {
     if (selectedTile) selectedTile.classList.remove("selected");
+    
+    document.querySelectorAll('.highlight-same').forEach(el => el.classList.remove('highlight-same'));
+
     selectedTile = this;
     selectedTile.classList.add("selected");
+
+    if (highlightEnabled) {
+        const val = selectedTile.innerText;
+        if (val) {
+            highlightSameNumbers(val);
+        }
+    }
+}
+
+function highlightSameNumbers(num) {
+    if(!num) return;
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let el = document.getElementById(r + "-" + c);
+            if (el.innerText === num) {
+                el.classList.add("highlight-same");
+            }
+        }
+    }
 }
 
 function selectNumber(num) {
     if (selectedTile) {
+        if(selectedTile.classList.contains("start-tile")) {
+            return;
+        }
+
         let coords = selectedTile.id.split("-");
         let r = parseInt(coords[0]);
         let c = parseInt(coords[1]);
@@ -135,6 +209,11 @@ function selectNumber(num) {
         boardState[r][c] = num;
         selectedTile.classList.add("user-tile");
         selectedTile.classList.remove("error");
+
+        document.querySelectorAll('.highlight-same').forEach(el => el.classList.remove('highlight-same'));
+        if (highlightEnabled) {
+            highlightSameNumbers(num.toString());
+        }
 
         if (currentMode === "instant") {
             if (num === solution[r][c]) {
@@ -154,6 +233,9 @@ function deleteNumber() {
         selectedTile.innerText = "";
         selectedTile.classList.remove("user-tile");
         selectedTile.classList.remove("error");
+        
+        document.querySelectorAll('.highlight-same').forEach(el => el.classList.remove('highlight-same'));
+
         let coords = selectedTile.id.split("-");
         boardState[parseInt(coords[0])][parseInt(coords[1])] = 0;
     }
@@ -187,15 +269,14 @@ function checkPuzzle() {
             if (checksRemaining === 0) {
                 checkBtn.disabled = true;
                 setTimeout(() => {
+                    // Game Over -> Zufallsbild laden!
+                    setRandomImage("gameover-img");
                     document.getElementById("gameover-modal").style.display = "flex";
                 }, 500);
             }
         } else {
-            // Kein Fehler -> Nettes Feedback
-            // Erstmal gucken ob es voll ist, dann triggert eh die Win-Logik
             checkIfBoardFull(); 
             
-            // Wenn nicht voll, aber richtig:
             let isFull = true;
             for(let r=0; r<9; r++) {
                 for(let c=0; c<9; c++) {
@@ -230,6 +311,8 @@ function checkIfBoardFull() {
         }
 
         if (isCorrect) {
+            // GEWONNEN -> Zufallsbild laden!
+            setRandomImage("winner-img");
             document.getElementById("winner-modal").style.display = "flex";
         } else {
             if (currentMode === "instant") {

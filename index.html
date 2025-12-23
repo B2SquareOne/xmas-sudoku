@@ -2,7 +2,6 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <!-- WICHTIG: viewport-fit=cover nutzt auch die Ecken bei neueren iPhones -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -10,6 +9,7 @@
     <title>Weihnachts-Sudoku</title>
     <link rel="stylesheet" href="style.css">
     <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -23,29 +23,34 @@
         <div class="snowflake">❅</div><div class="snowflake">❆</div>
         <div class="snowflake">❅</div><div class="snowflake">❆</div>
         <div class="snowflake">❅</div><div class="snowflake">❆</div>
-        <div class="snowflake">❅</div><div class="snowflake">❆</div>
     </div>
 
     <!-- STARTBILDSCHIRM -->
     <div id="start-screen">
         <div class="start-content">
-            <img src="startbild1.png" class="start-image" alt="Wir">
+            <!-- WICHTIG: id="start-img" hinzugefügt -->
+            <img src="" id="start-img" class="start-image" alt="Wir">
             <h1>Frohe Weihnachten!</h1>
             <p>Viel Spaß beim Rätseln, mein Schatz! ❤️</p>
             
             <div class="settings-box">
                 <label>Schwierigkeit:</label>
                 <select id="difficulty-select">
-                    <option value="easy">Leicht (Zum Entspannen)</option>
-                    <option value="medium" selected>Mittel (Normal)</option>
-                    <option value="hard">Schwer (Knackig!)</option>
+                    <option value="easy">Leicht (bestimmt zu leicht für dich)</option>
+                    <option value="medium" selected>Mittel (Zeig was du kannst!)</option>
+                    <option value="hard">Schwer (Mal sehen ob du das schaffst ;-)</option>
                 </select>
 
                 <label>Spiel-Modus:</label>
                 <select id="mode-select">
-                    <option value="instant">Sofortige Hilfe (Farben)</option>
+                    <option value="instant">Sofortige Hilfe</option>
                     <option value="classic">Klassisch (3 Leben)</option>
                 </select>
+
+                <div class="checkbox-wrapper">
+                    <label for="highlight-toggle">Gleiche Zahlen leuchten?</label>
+                    <input type="checkbox" id="highlight-toggle" checked>
+                </div>
             </div>
 
             <button onclick="startGame()" class="start-btn-big">🎁 Spiel Starten</button>
@@ -88,17 +93,20 @@
     <div id="winner-modal" class="modal">
         <div class="modal-content">
             <h2>✨ Perfekt! ✨</h2>
+            <!-- NEU: Bild auch hier! -->
+            <img src="" id="winner-img" class="winner-image" alt="Juhuu">
             <p>Du bist mein Sudoku-Engel!</p>
             <button onclick="closeWinnerModal()">Nochmal spielen</button>
         </div>
     </div>
 
-    <!-- GAME OVER MODAL --->
+    <!-- GAME OVER MODAL -->
     <div id="gameover-modal" class="modal">
         <div class="modal-content">
             <h2>Schade! 😢</h2>
             <p>Keine Versuche mehr übrig.</p>
-            <img src="neustarten1.png" class="gameover-image" alt="Ups">
+            <!-- WICHTIG: id="gameover-img" hinzugefügt -->
+            <img src="" id="gameover-img" class="gameover-image" alt="Ups">
             <div class="modal-buttons">
                 <button onclick="restartGame()" class="retry-btn">🔄 Neu Starten</button>
                 <button onclick="gameOverToMenu()" class="back-btn">🏠 Zum Start</button>
@@ -117,5 +125,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
